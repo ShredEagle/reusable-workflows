@@ -3,8 +3,11 @@ name: Reusable main build workflow
 on:
   workflow_call:
     inputs:
+      conan_customparams:
+        description: "Optional custom parameters to conan install/create commands."
+        type: string
       conan_hostprofile:
-        description: Host profile used by Conan commands.
+        description: "Host profile used by Conan commands."
         default: "game"
         type: string
       deployrecipe_userchannel:
@@ -18,6 +21,10 @@ on:
         type: boolean
       step_conancache:
         description: "Control execution of the cache action over Conan local packages."
+        default: true
+        type: boolean
+      step_runtests:
+        description: "Control execution of the testing step, running the 'tests' application."
         default: true
         type: boolean
       os:
@@ -59,7 +66,9 @@ jobs:
       matrix:
         #see: https://github.community/t/reusable-workflow-with-strategy-matrix/205676/2
         os: ${{fromJson(inputs.os)}}
-        development_build: [true, false]
+        # TODO Ad 2022/03/22: I do not know how to handle this optional dimension in a unified manner.
+        # Deactivate it for the moment.
+        #development_build: [true, false]
         cppstd: [20]
         include:
           - os: ubuntu-20.04
@@ -130,29 +139,30 @@ jobs:
           --profile:build build/${{ runner.os }}
           --profile:host ${{ inputs.conan_hostprofile }}
           -o ${{ steps.recipe.outputs.name }}:build_tests=True
-          -o ${{ steps.recipe.outputs.name }}:build_devmode=${{ matrix.development_build && 'True' || 'False' }}
           -s compiler.cppstd=${{ matrix.cppstd }}
+          ${{ inputs.conan_customparams }}
           conan/ ${{ steps.recipe.outputs.reference }}
 
       - name: Prepare virtual run env
+        if: ${{ success() && inputs.step_runtests }}
         run: >
           conan install -g virtualrunenv
           --profile:build build/${{ runner.os }}
           --profile:host ${{ inputs.conan_hostprofile }}
           -o ${{ steps.recipe.outputs.name }}:build_tests=True
-          -o ${{ steps.recipe.outputs.name }}:build_devmode=${{ matrix.development_build && 'True' || 'False' }}
           -s compiler.cppstd=${{ matrix.cppstd }}
+          ${{ inputs.conan_customparams }}
           ${{ steps.recipe.outputs.reference }}
 
       - name: Run tests (bash)
-        if: ${{ success() && runner.os != 'Windows' }}
+        if: ${{ success() && inputs.step_runtests && runner.os != 'Windows' }}
         run: |
           source activate_run.sh
           ${{ steps.recipe.outputs.name }}_tests
           source deactivate_run.sh
 
       - name: Run tests (cmd)
-        if: ${{ success() && runner.os == 'Windows' }}
+        if: ${{ success() && inputs.step_runtests && runner.os == 'Windows' }}
         run: |
           ./activate_run.bat
           ${{ steps.recipe.outputs.name }}_tests
@@ -177,8 +187,8 @@ jobs:
           --profile:build build/${{ runner.os }}
           --profile:host ${{ inputs.conan_hostprofile }}
           -o ${{ steps.recipe.outputs.name }}:build_tests=True
-          -o ${{ steps.recipe.outputs.name }}:build_devmode=${{ matrix.development_build && 'True' || 'False' }}
           -s compiler.cppstd=${{ matrix.cppstd }}
+          ${{ inputs.conan_customparams }}
           ${{ steps.recipe.outputs.reference }}
         shell: bash
 
