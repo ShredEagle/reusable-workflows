@@ -6,7 +6,6 @@ on:
       conan_hostprofile:
         description: Host profile used by Conan commands.
         default: "game"
-        required: true
         type: string
       deployrecipe_userchannel:
         description: >-
@@ -26,7 +25,6 @@ on:
           Stringified JSON array listing the target runner OSes.
         default: >-
           ["ubuntu-20.04", "windows-2019", "macos-11"]
-        required: true
         type: string
       version:
         description: "Version number to use in the recipe and CMake build."
