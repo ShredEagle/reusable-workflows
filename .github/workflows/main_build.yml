@@ -82,9 +82,9 @@ jobs:
             compiler: gcc
             gccversion: 10
         exclude:
-          - os: windows-latest
+          - os: windows-2019
             compiler: clang
-          - os: windows-latest
+          - os: windows-2019
             compiler: gcc
           - os: ubuntu-20.04
             compiler: msvc
