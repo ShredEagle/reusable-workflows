@@ -33,12 +33,6 @@ on:
         default: >-
           ["ubuntu-20.04", "windows-2019", "macos-11"]
         type: string
-      compiler:
-        description: >-
-          Stringified JSON array listing the target compilers.
-        default: >-
-          ["clang", "gcc", "msvc"]
-        type: string
       version:
         description: "Version number to use in the recipe and CMake build."
         required: false
@@ -72,22 +66,33 @@ jobs:
       matrix:
         #see: https://github.community/t/reusable-workflow-with-strategy-matrix/205676/2
         os: ${{fromJson(inputs.os)}}
-        compiler: ${{fromJson(inputs.compiler)}}
+        # 2022/07/19: a dummy compiler dimension must be declared, otherwise the includes would
+        # overwrite each-other.
+        # > Note that the original matrix values will not be overwritten,
+        # > but added matrix values can be overwritten.
+        compiler: [""]
+        cppstd: [20]
         # TODO Ad 2022/03/22: I do not know how to handle this optional dimension in a unified manner.
         # Deactivate it for the moment.
         #development_build: [true, false]
-        cppstd: [20]
+        # 2022/07/19: since os is already present in the original matrix, new combinations are created
+        # from scratch.
+        # see: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategymatrixinclude
+        # So, the included combinations must be explicit about each dimension.
+        # This is why cppstd is repeated here.
         include:
           - os: ubuntu-20.04
             compiler: gcc
             gccversion: 10
-        exclude:
-          - os: windows-2019
-            compiler: clang
-          - os: windows-2019
-            compiler: gcc
+            cppstd: 20
           - os: ubuntu-20.04
-            compiler: msvc
+            compiler: clang
+            clangversion: 12
+            cppstd: 20
+        # Exclude the "dummy" compiler for ubuntu.
+        exclude:
+          - os: ubuntu-20.04
+            compiler: ""
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
@@ -107,7 +112,7 @@ jobs:
         if: runner.os == 'Linux' && matrix.compiler == 'clang'
         run: |
           sudo apt update
-          sudo apt install clang-12
+          sudo apt install clang-${{ matrix.clangversion }}
           echo "CC=clang" >> $GITHUB_ENV
           echo "CXX=clang++" >> $GITHUB_ENV
 
