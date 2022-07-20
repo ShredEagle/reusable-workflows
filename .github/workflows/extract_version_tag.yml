@@ -1,0 +1,25 @@
+name: Reusable extract version tag workflow
+
+on:
+  workflow_call:
+    # Map the workflow outputs to job outputs
+    outputs:
+      version:
+        description: "The version read from the tag."
+        value: ${{ jobs.extract_tag.outputs.version }}
+
+jobs:
+  extract_tag:
+    name: Extract tag
+    runs-on: ubuntu-latest
+    # Map the job outputs to step outputs
+    outputs:
+      version: ${{ steps.tag.outputs.version }}
+    steps:
+      - name: Extract version from tag
+        id: tag
+        shell: bash
+        run: |
+          tag_version=$(echo "${{ github.ref_name }}" | cut -c2-)
+          echo "Extracted version ${tag_version}."
+          echo "::set-output name=version::${tag_version}"
