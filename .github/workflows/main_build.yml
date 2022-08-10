@@ -71,7 +71,7 @@ jobs:
         # > Note that the original matrix values will not be overwritten,
         # > but added matrix values can be overwritten.
         compiler: [""]
-        profile: [${{inputs.conan_hostprofile}}]
+        profile: ["${{inputs.conan_hostprofile}}"]
         cppstd: [20]
         # TODO Ad 2022/03/22: I do not know how to handle this optional dimension in a unified manner.
         # Deactivate it for the moment.
