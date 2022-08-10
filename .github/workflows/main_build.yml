@@ -6,6 +6,10 @@ on:
       conan_customparams:
         description: "Optional custom parameters to conan install/create commands."
         type: string
+      conan_hostprofile:
+        description: "Host profile used by Conan commands."
+        default: "game"
+        type: string
       deployrecipe_userchannel:
         description: >-
           Control execution of the deployment of Conan recipe, as well as user and channel.
