@@ -31,7 +31,7 @@ on:
         description: >-
           Stringified JSON array listing the target runner OSes.
         default: >-
-          ["ubuntu-20.04", "windows-2019", "macos-11"]
+          ["ubuntu-20.04", "windows-2019", "macos-12"]
         type: string
       version:
         description: "Version number to use in the recipe and CMake build."
@@ -92,11 +92,6 @@ jobs:
             clangversion: 12
             cppstd: 20
             profile: ${{inputs.conan_hostprofile}}
-          - os: macos-11
-            compiler: clang
-            clangversion: 12
-            cppstd: 20
-            profile: "${{inputs.conan_hostprofile}}-mac"
         # Exclude the "dummy" compiler for ubuntu.
         exclude:
           - os: ubuntu-20.04
