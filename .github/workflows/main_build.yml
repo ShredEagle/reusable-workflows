@@ -71,6 +71,7 @@ jobs:
         # > Note that the original matrix values will not be overwritten,
         # > but added matrix values can be overwritten.
         compiler: [""]
+        profile: ["${{inputs.conan_hostprofile}}"]
         cppstd: [20]
         # TODO Ad 2022/03/22: I do not know how to handle this optional dimension in a unified manner.
         # Deactivate it for the moment.
@@ -85,10 +86,17 @@ jobs:
             compiler: gcc
             gccversion: 10
             cppstd: 20
+            profile: ${{inputs.conan_hostprofile}}
           - os: ubuntu-20.04
             compiler: clang
             clangversion: 12
             cppstd: 20
+            profile: ${{inputs.conan_hostprofile}}
+          - os: macos-11
+            compiler: clang
+            clangversion: 12
+            cppstd: 20
+            profile: "${{inputs.conan_hostprofile}}-mac"
         # Exclude the "dummy" compiler for ubuntu.
         exclude:
           - os: ubuntu-20.04
@@ -166,7 +174,7 @@ jobs:
           conan create
           --build=missing
           --profile:build build/${{ runner.os }}
-          --profile:host ${{ inputs.conan_hostprofile }}
+          --profile:host ${{ matrix.profile }}
           -o ${{ steps.recipe.outputs.name }}:build_tests=True
           -s compiler.cppstd=${{ matrix.cppstd }}
           ${{ inputs.conan_customparams }}
@@ -177,7 +185,7 @@ jobs:
         run: >
           conan install -g virtualrunenv
           --profile:build build/${{ runner.os }}
-          --profile:host ${{ inputs.conan_hostprofile }}
+          --profile:host ${{ matrix.profile }}
           -o ${{ steps.recipe.outputs.name }}:build_tests=True
           -s compiler.cppstd=${{ matrix.cppstd }}
           ${{ inputs.conan_customparams }}
@@ -214,7 +222,7 @@ jobs:
         run: >
           conan install
           --profile:build build/${{ runner.os }}
-          --profile:host ${{ inputs.conan_hostprofile }}
+          --profile:host ${{ matrix.profile }}
           -o ${{ steps.recipe.outputs.name }}:build_tests=True
           -s compiler.cppstd=${{ matrix.cppstd }}
           ${{ inputs.conan_customparams }}
