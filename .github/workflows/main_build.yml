@@ -54,6 +54,7 @@ env:
   #CONAN_V2_MODE: 1
   CONAN_SCM_TO_CONANDATA: 1
   # Required at least for opengl/system on Linux runner, which must use the package manager.
+  # Is it still useful with tools.system.package_manager:mode in the profile?
   CONAN_SYSREQUIRES_MODE: enabled
   # see: https://docs.conan.io/en/latest/reference/env_vars.html#conan-user-home-short
   # Disable short paths on Windows, which otherwise ruins the cache@v2 actions.
