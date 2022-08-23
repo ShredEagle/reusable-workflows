@@ -146,6 +146,15 @@ jobs:
         # Remotes, profiles, and settings
         run: conan config install https://${{ secrets.SHREDROBOT_GITHUB_TOKEN }}@github.com/ShredEagle/conan-config.git
 
+        # Workaround for slow cache restoration on Windows.
+        # see: https://github.com/actions/cache/issues/752#issuecomment-1222415717
+      - if: ${{ runner.os == 'Windows' }}
+        name: Use GNU tar
+        shell: cmd
+        run: |
+          echo "Adding GNU tar to PATH"
+          echo C:\Program Files\Git\usr\bin>>"%GITHUB_PATH%"
+
       - name: Cache Conan local data
         if: ${{ success() && inputs.step_conancache }}
         uses: actions/cache@v2
