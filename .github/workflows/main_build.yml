@@ -58,7 +58,7 @@ env:
   CONAN_SYSREQUIRES_MODE: enabled
   # see: https://docs.conan.io/en/latest/reference/env_vars.html#conan-user-home-short
   # Disable short paths on Windows, which otherwise ruins the cache@v2 actions.
-  CONAN_USER_HOME_SHORT: None
+  CONAN_USER_HOME_SHORT: /.cs
 
 jobs:
   build_test_deploy:
@@ -171,6 +171,7 @@ jobs:
           path: |
             ~/.conan/data/*/*
             !~/.conan/data/*/system
+            ${{ env.CONAN_USER_HOME_SHORT }}
           key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('conan/conanfile.py') }}
           restore-keys: |
             ${{ runner.os }}-${{ env.cache-name }}
