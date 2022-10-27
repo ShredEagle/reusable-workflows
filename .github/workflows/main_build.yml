@@ -134,12 +134,12 @@ jobs:
           # That is not the accurate recipe name, this is just by convention.
           # see: https://github.com/conan-io/conan/issues/9264
           recipe_name=${GITHUB_REPOSITORY#*/}
-          echo "::set-output name=name::${recipe_name}"
+          echo "name=${recipe_name}" >> $GITHUB_OUTPUT
           recipe_version=${{ inputs.version }}
           if [ -z "$recipe_version" ]; then recipe_version=$(echo ${GITHUB_SHA} | cut -c1-10); fi
-          echo "::set-output name=version::${recipe_version}"
+          echo "version=${recipe_version}" >> $GITHUB_OUTPUT
           recipe_userchannel=${{ inputs.deployrecipe_userchannel }}
-          echo "::set-output name=reference::${recipe_name}/${recipe_version}@${recipe_userchannel}"
+          echo "reference=${recipe_name}/${recipe_version}@${recipe_userchannel}" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Get Conan
