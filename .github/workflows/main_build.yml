@@ -56,9 +56,12 @@ env:
   # Required at least for opengl/system on Linux runner, which must use the package manager.
   # Is it still useful with tools.system.package_manager:mode in the profile?
   CONAN_SYSREQUIRES_MODE: enabled
+  # Some recipe need to use short-path on Windows because of some MSBUILD limitation with long path
+  # as of today (2022/10/27).
+  # The recipes itself will specify short path explicitly, but we control the shortpath prefix
+  # to use the same value in conan cache. (We set what is the currently the default Conan value).
   # see: https://docs.conan.io/en/latest/reference/env_vars.html#conan-user-home-short
-  # Disable short paths on Windows, which otherwise ruins the cache@v2 actions.
-  CONAN_USER_HOME_SHORT: /.cs
+  CONAN_USER_HOME_SHORT: C:/.conan
 
 jobs:
   build_test_deploy:
