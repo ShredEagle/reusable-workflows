@@ -143,7 +143,7 @@ jobs:
         shell: bash
 
       - name: Get Conan
-        uses: turtlebrowser/get-conan@v1.0
+        uses: turtlebrowser/get-conan@v1.1
 
       - name: Configure Conan
         # Remotes, profiles, and settings
