@@ -120,8 +120,10 @@ jobs:
         run: |
           sudo apt update
           sudo apt install clang-${{ matrix.clangversion }}
-          echo "CC=clang" >> $GITHUB_ENV
-          echo "CXX=clang++" >> $GITHUB_ENV
+          # Tried using update-alternatives but it did not update the alternative to clang++ only clang
+          # which is sad
+          echo "CC=clang-${{ matrix.clangversion }}" >> $GITHUB_ENV
+          echo "CXX=clang++-${{ matrix.clangversion }}" >> $GITHUB_ENV
 
 
       - uses: actions/checkout@v3
