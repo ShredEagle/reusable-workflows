@@ -115,11 +115,9 @@ jobs:
           echo "CC=gcc-${{ matrix.gccversion }}" >> $GITHUB_ENV
           echo "CXX=g++-${{ matrix.gccversion }}" >> $GITHUB_ENV
 
-      - name: Install clang
+      - name: Select clang version.
         if: runner.os == 'Linux' && matrix.compiler == 'clang'
         run: |
-          sudo apt update
-          sudo apt install clang-${{ matrix.clangversion }}
           # Tried using update-alternatives but it did not update the alternative to clang++ only clang
           # which is sad
           echo "CC=clang-${{ matrix.clangversion }}" >> $GITHUB_ENV
