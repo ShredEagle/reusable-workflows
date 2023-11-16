@@ -93,7 +93,7 @@ jobs:
             profile: ${{inputs.conan_hostprofile}}
           - os: ubuntu-22.04
             compiler: clang
-            clangversion: 14
+            clangversion: 15
             cppstd: 20
             profile: ${{inputs.conan_hostprofile}}
         # Exclude the "dummy" compiler for ubuntu.
