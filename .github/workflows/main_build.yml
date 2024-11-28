@@ -154,7 +154,7 @@ jobs:
         # Commit on main merging PR addressing deprecated set-output.
         uses: turtlebrowser/get-conan@v1.2
         with:
-          version: 1.59.0
+          version: 1.64.0
 
       - name: Configure Conan
         # Remotes, profiles, and settings
