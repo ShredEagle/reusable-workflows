@@ -252,7 +252,7 @@ jobs:
 
       - name: Upload build artifacts
         if: ${{ success() && inputs.step_artifacts }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-${{ matrix.development_build && 'devbuild' || 'build' }}
           path: bin/
