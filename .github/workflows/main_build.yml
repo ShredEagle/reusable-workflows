@@ -189,11 +189,12 @@ jobs:
           ##
           ## There is a bug with the exclude pattern.
           ## see workaround: https://github.com/actions/toolkit/issues/713#issuecomment-850321461
-          #path: |
-          #  ~/.conan/data/*/*
           #  !~/.conan/data/*/system
-          #  ${{ env.CONAN_USER_HOME_SHORT }}
-          #key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('conan/conanfile.py') }}
+          path: |
+            ~/.conan/data/*/*
+          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('conan/conanfile.py') }}
+          # If no cache hit with exact key, allow the most recent cache entry matching OS + cache-name.
+          # (It might not contain all dependencies if this part of the conanfile changed).
           restore-keys: |
             ${{ runner.os }}-${{ env.cache-name }}
 
@@ -212,7 +213,7 @@ jobs:
 
       - name: Deploy Conan recipe
         #if: ${{ success() && contains('refs/heads/develop', github.ref) }}
-        if: ${{ success() && inputs.deployrecipe_user!= '' }}
+        if: ${{ success() && inputs.deployrecipe_user != '' }}
           # Note: the env based approach is recommended by the doc:
           # https://docs.conan.io/2.14/reference/commands/remote.html#conan-remote-auth
           # But it fails with error:
