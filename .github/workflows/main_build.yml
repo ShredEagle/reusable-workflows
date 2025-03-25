@@ -10,9 +10,9 @@ on:
         description: "Host profile used by Conan commands."
         default: "game"
         type: string
-      deployrecipe_userchannel:
+      deployrecipe_user:
         description: >-
-          Control execution of the deployment of Conan recipe, as well as user and channel.
+          Control execution of the deployment of Conan recipe, as well as package identifier user.
         default: "" # Default does not execute the step
         type: string
       step_artifacts:
@@ -149,8 +149,9 @@ jobs:
           recipe_version=${{ inputs.version }}
           if [ -z "$recipe_version" ]; then recipe_version=$(echo ${GITHUB_SHA} | cut -c1-10); fi
           echo "version=${recipe_version}" >> $GITHUB_OUTPUT
-          recipe_userchannel=${{ inputs.deployrecipe_userchannel }}
-          echo "reference=${recipe_name}/${recipe_version}@${recipe_userchannel}" >> $GITHUB_OUTPUT
+          recipe_user=${{ inputs.deployrecipe_user}}
+          echo "user=\"${recipe_user}\"" >> $GITHUB_OUTPUT
+          echo "reference=${recipe_name}/${recipe_version}@${recipe_user}" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Get Conan
@@ -202,11 +203,13 @@ jobs:
           -c tools.build:skip_test=True
           -s compiler.cppstd=${{ matrix.cppstd }}
           ${{ inputs.conan_customparams }}
-          conan/ ${{ steps.recipe.outputs.reference }}
+          --version ${{ steps.recipe.outputs.version }}
+          --user ${{ steps.recipe.outputs.user }}
+          conan/
 
       - name: Deploy Conan recipe
         #if: ${{ success() && contains('refs/heads/develop', github.ref) }}
-        if: ${{ success() && inputs.deployrecipe_userchannel != '' }}
+        if: ${{ success() && inputs.deployrecipe_user!= '' }}
         run: |
           conan user -p ${{ secrets.CONAN_USER_PASSWORD }} -r adnn ${{ secrets.CONAN_USER_NAME }}
           conan upload -r adnn --confirm ${{ steps.recipe.outputs.reference }}
