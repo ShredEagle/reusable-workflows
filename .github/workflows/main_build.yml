@@ -204,34 +204,6 @@ jobs:
           ${{ inputs.conan_customparams }}
           conan/ ${{ steps.recipe.outputs.reference }}
 
-          #- name: Prepare virtual run env
-          #  if: ${{ success() && inputs.step_runtests }}
-          #  run: >
-          #    conan install -g virtualrunenv
-          #    --profile:build build/${{ runner.os }}
-          #    --profile:host ${{ matrix.profile }}
-          #    -o ${{ steps.recipe.outputs.name }}:build_tests=True
-          #    -s compiler.cppstd=${{ matrix.cppstd }}
-          #    ${{ inputs.conan_customparams }}
-          #    ${{ steps.recipe.outputs.reference }}
-
-          #- name: Run tests (bash)
-          #  if: ${{ success() && inputs.step_runtests && runner.os != 'Windows' }}
-          #  run: |
-          #    source activate_run.sh
-          #    ${{ steps.recipe.outputs.name }}_tests
-          #    source deactivate_run.sh
-
-          #- name: Run tests (cmd)
-          #  if: ${{ success() && inputs.step_runtests && runner.os == 'Windows' }}
-          #  run: |
-          #    ./activate_run.bat
-          #    ${{ steps.recipe.outputs.name }}_tests
-          #    ./deactivate_run.bat
-          #  # Powershell does not stop on first error
-          #  # see: https://github.community/t/multiline-commands-on-windows-do-not-fail-if-individual-commands-fail/16753
-          #  shell: cmd
-
       - name: Deploy Conan recipe
         #if: ${{ success() && contains('refs/heads/develop', github.ref) }}
         if: ${{ success() && inputs.deployrecipe_userchannel != '' }}
