@@ -203,8 +203,8 @@ jobs:
           --build=missing
           --profile:build build/${{ runner.os }}
           --profile:host ${{ matrix.profile }}
-          -c tools.build:skip_test=True
           -s compiler.cppstd=${{ matrix.cppstd }}
+          -c tools.build:skip_test=${{ inputs.conan_skiptests }}
           ${{ inputs.conan_customparams }}
           --version ${{ steps.recipe.outputs.version }}
           --user ${{ steps.recipe.outputs.user }}
@@ -227,8 +227,9 @@ jobs:
           --profile:build build/${{ runner.os }}
           --profile:host ${{ matrix.profile }}
           -s compiler.cppstd=${{ matrix.cppstd }}
-          ${{ inputs.conan_customparams }}
-          ${{ steps.recipe.outputs.reference }}
+          -c tools.build:skip_test=${{ inputs.conan_skiptests }}
+          --requires=${{ steps.recipe.outputs.reference }}
+          --deployer-package=${{ steps.recipe.outputs.reference }}
         shell: bash
 
       - name: Upload build artifacts
