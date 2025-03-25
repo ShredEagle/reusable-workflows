@@ -213,9 +213,17 @@ jobs:
       - name: Deploy Conan recipe
         #if: ${{ success() && contains('refs/heads/develop', github.ref) }}
         if: ${{ success() && inputs.deployrecipe_user!= '' }}
+          # Note: the env based approach is recommended by the doc:
+          # https://docs.conan.io/2.14/reference/commands/remote.html#conan-remote-auth
+          # But it fails with error:
+          # "Remote 'adnn' username: ERROR: EOF when reading a line. [Remote: adnn]"
+          # on all runner **except** Windows
+          #env:
+          #  CONAN_LOGIN_USERNAME_adnn: "${{ secrets.CONAN_USER_NAME }}"
+          #  CONAN_PASSWORD_adnn: "${{ secrets.CONAN_USER_PASSWORD }}"
         run: |
-          conan user -p ${{ secrets.CONAN_USER_PASSWORD }} -r adnn ${{ secrets.CONAN_USER_NAME }}
-          conan upload -r adnn --confirm ${{ steps.recipe.outputs.reference }}
+          conan remote login -p ${{ secrets.CONAN_USER_PASSWORD }} adnn ${{ secrets.CONAN_USER_NAME }}
+          conan upload -r adnn --confirm --only-recipe ${{ steps.recipe.outputs.reference }}
           echo "Deployed recipe: ${{ steps.recipe.outputs.reference }}" >> $GITHUB_STEP_SUMMARY
         shell: bash
 
