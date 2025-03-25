@@ -31,7 +31,7 @@ on:
         description: >-
           Stringified JSON array listing the target runner OSes.
         default: >-
-          ["ubuntu-24.04", "windows-2022", "macos-13"]
+          ["ubuntu-24.04", "windows-2022"]
         type: string
       version:
         description: "Version number to use in the recipe and CMake build."
