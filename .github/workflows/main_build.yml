@@ -161,8 +161,11 @@ jobs:
           version: 2.14.0
 
       - name: Configure Conan
-        # Remotes, profiles, and settings
-        run: conan config install https://${{ secrets.SHREDROBOT_GITHUB_TOKEN }}@github.com/ShredEagle/conan-config.git
+        # Create the default profile
+        # Install configuration for remotes, profiles, and settings
+        run: |
+          conan profile detect
+          conan config install https://${{ secrets.SHREDROBOT_GITHUB_TOKEN }}@github.com/ShredEagle/conan-config.git
 
           #  # Workaround for slow cache restoration on Windows.
           #  # see: https://github.com/actions/cache/issues/752#issuecomment-1222415717
