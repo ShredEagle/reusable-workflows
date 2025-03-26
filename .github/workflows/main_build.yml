@@ -192,11 +192,14 @@ jobs:
           #  !~/.conan/data/*/system
           path: |
             ~/.conan2/p
-          key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('conan/conanfile.py') }}
+          # The key join all matrices parameters, otherwise we might have a collision in a cache key
+          # which could results in "Unable to reserve cache with key X another job may be creating this cache."
+          # if both runners execute the "Post Cache" at the same time.
+          key: ${{ join(matrix.*, '_') }}-${{ env.cache-name }}-${{ hashFiles('conan/conanfile.py') }}
           # If no cache hit with exact key, allow the most recent cache entry matching OS + cache-name.
           # (It might not contain all dependencies if this part of the conanfile changed).
           restore-keys: |
-            ${{ runner.os }}-${{ env.cache-name }}
+            ${{ join(matrix.*, '_') }}-${{ env.cache-name }}
 
       # build=missing, since we do not upload binaries to the Conan server atm
       - run: >
