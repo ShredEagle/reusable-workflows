@@ -202,9 +202,11 @@ jobs:
             ${{ join(matrix.*, '_') }}-${{ env.cache-name }}
 
       # build=missing, since we do not upload binaries to the Conan server atm
+      # build=this_reference, in the unlikely scenario where the cache already contains this recipe in this revision
       - run: >
           conan create
           --build=missing
+          --build=${{ steps.recipe.outputs.reference }}
           --profile:build build/${{ runner.os }}
           --profile:host ${{ matrix.profile }}
           -s compiler.cppstd=${{ matrix.cppstd }}
