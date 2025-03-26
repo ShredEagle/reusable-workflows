@@ -191,7 +191,7 @@ jobs:
           ## see workaround: https://github.com/actions/toolkit/issues/713#issuecomment-850321461
           #  !~/.conan/data/*/system
           path: |
-            ~/.conan/data/*/*
+            ~/.conan2/p
           key: ${{ runner.os }}-${{ env.cache-name }}-${{ hashFiles('conan/conanfile.py') }}
           # If no cache hit with exact key, allow the most recent cache entry matching OS + cache-name.
           # (It might not contain all dependencies if this part of the conanfile changed).
