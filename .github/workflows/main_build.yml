@@ -3,6 +3,10 @@ name: Reusable main build workflow
 on:
   workflow_call:
     inputs:
+      conan_config_branch:
+        description: "Select which branch to clone during conan config install"
+        type: string
+        default: "main"
       conan_customparams:
         description: "Optional custom parameters to conan install/create commands."
         type: string
@@ -148,7 +152,7 @@ jobs:
         # Install configuration for remotes, profiles, and settings
         run: |
           conan profile detect
-          conan config install https://${{ secrets.SHREDROBOT_GITHUB_TOKEN }}@github.com/ShredEagle/conan-config.git
+          conan config install https://${{ secrets.SHREDROBOT_GITHUB_TOKEN }}@github.com/ShredEagle/conan-config.git --args "--branch ${{ inputs.conan_config_branch }}"
 
       - name: Cache Conan local data
         if: ${{ success() && inputs.step_conancache }}
