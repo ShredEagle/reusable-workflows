@@ -3,6 +3,10 @@ name: Reusable main build workflow
 on:
   workflow_call:
     inputs:
+      conan_config_branch:
+        description: "Select which branch to clone during conan config install"
+        type: string
+        default: "main"
       conan_customparams:
         description: "Optional custom parameters to conan install/create commands."
         type: string
@@ -158,7 +162,7 @@ jobs:
 
       - name: Configure Conan
         # Remotes, profiles, and settings
-        run: conan config install https://${{ secrets.SHREDROBOT_GITHUB_TOKEN }}@github.com/ShredEagle/conan-config.git
+        run: conan config install https://${{ secrets.SHREDROBOT_GITHUB_TOKEN }}@github.com/ShredEagle/conan-config.git --args "--branch ${{ inputs.conan_config_branch }}"
 
         # Workaround for slow cache restoration on Windows.
         # see: https://github.com/actions/cache/issues/752#issuecomment-1222415717
